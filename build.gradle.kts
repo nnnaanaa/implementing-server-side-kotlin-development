@@ -25,6 +25,37 @@ plugins {
 	 * KotlinのLinter/Formatter
 	 */
 	id("io.gitlab.arturbosch.detekt") version "1.23.5"
+
+	/**
+	 * dokka
+	 *
+	 * URL
+	 * - https://github.com/Kotlin/dokka
+	 * GradlePlugins(plugins.gradle.org)
+	 * - https://plugins.gradle.org/plugin/org.jetbrains.dokka
+	 * Main用途
+	 * - ドキュメント生成
+	 * Sub用途
+	 * - 特になし
+	 * 概要
+	 * - JDocの代替(=KDoc)
+	 */
+	id("org.jetbrains.dokka") version "1.9.20"
+
+	/**
+	 * springdoc
+	 *
+	 * URL
+	 * - https://springdoc.org/
+	 * Main 用途
+	 * - OpenAPI 仕様に基づいたドキュメントを生成する
+	 * Sub 用途
+	 * - なし
+	 * 概要
+	 * コードから OpenAPI 仕様に基づいたドキュメントの生成ライブラリ
+	 */
+	 // id("org.springdoc.openapi-gradle-plugin") version "1.8.0"
+	id("org.springdoc.openapi-gradle-plugin") version "1.9.0"
 }
 
 group = "com.example"
@@ -61,6 +92,108 @@ dependencies {
 	 * - format自動適用オプションの autoCorrect が使えるようになる
 	 */
 	detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.21.0")
+
+	/**
+	 * dokkaHtmlPlugin
+	 *
+	 * dokka Pluginを適用するのに必要
+	 */
+	dokkaHtmlPlugin("org.jetbrains.dokka:kotlin-as-java-plugin:1.9.20")
+
+	/**
+	 * jqwik
+	 *
+	 * URL
+	 * - https://jqwik.net/
+	 * MavenCentral
+	 * - https://mvnrepository.com/artifact/net.jqwik/jqwik
+	 * - https://mvnrepository.com/artifact/net.jqwik/jqwik-kotlin
+	 * Main用途
+	 * - Property Based Testing(pbt)
+	 * 概要
+	 * - Property Based Testingをするのに便利なライブラリ
+	 * 参考
+	 * - https://medium.com/criteo-engineering/introduction-to-property-based-testing-f5236229d237
+	 * - https://johanneslink.net/property-based-testing-in-kotlin/#jqwiks-kotlin-support
+	 */
+	testImplementation("net.jqwik:jqwik:1.8.2")
+	testImplementation("net.jqwik:jqwik-kotlin:1.8.2")
+
+	/**
+	 * Spring Boot Starter Validation
+	 *
+	 * MavenCentral
+	 * - https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+	 * Main用途
+	 * - コントローラーのバリデーションのために利用する
+	 * Sub用途
+	 * - 無し
+	 * 概要
+	 * - Validation を実装した際に、本ライブラリがなければ、バリデーションが動作しない
+	 */
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+
+	/**
+	 * springdoc の gradle 拡張
+	 *
+	 * 概要
+	 * - CLI から springdoc を利用して OpenAPI を 生成する
+	 */
+	// implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.8.1")
+
+	/**
+	 * Spring JDBC
+	 *
+	 * URL
+	 * - https://spring.pleiades.io/spring-framework/docs/current/javadoc-api/org/springframework/jdbc/core/package-summary.html
+	 * MavenCentral
+	 * - https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc
+	 * Main用途
+	 * - DBへ保存
+	 * 概要
+	 * - 特になし
+	 *
+	 * これを入れるだけで、application.properties/yamlや@ConfigurationによるDB接続設定が必要になる
+	 */
+	implementation("org.springframework.boot:spring-boot-starter-jdbc")
+
+	/**
+	 * postgresql
+	 *
+	 * URL
+	 * - https://jdbc.postgresql.org/
+	 * MavenCentral
+	 * - https://mvnrepository.com/artifact/org.postgresql/postgresql
+	 * Main用途
+	 * - DBつなぐ時のドライバ
+	 * 概要
+	 * - 特になし
+	 */
+	implementation("org.postgresql:postgresql")
+
+	// 略
+	/**
+	 * Database Rider
+	 *
+	 * - Rider Core
+	 * - Rider Spring
+	 * - Rider JUnit 5
+	 *
+	 * URL
+	 * - https://database-rider.github.io/database-rider/
+	 * MavenCentral
+	 * - https://mvnrepository.com/artifact/com.github.database-rider/rider-core
+	 * - https://mvnrepository.com/artifact/com.github.database-rider/rider-spring
+	 * - https://mvnrepository.com/artifact/com.github.database-rider/rider-junit5
+	 * Main用途
+	 * - JUnitでDB周りのテスト時のヘルパー
+	 * 概要
+	 * - テーブルの事前条件、事後条件を簡潔に設定できる
+	 */
+	implementation("com.github.database-rider:rider-core:1.41.0")
+	implementation("com.github.database-rider:rider-spring:1.41.0")
+	testImplementation("com.github.database-rider:rider-junit5:1.41.0")
 }
 
 kotlin {
@@ -88,4 +221,27 @@ detekt {
 		"$projectDir/config/detekt/detekt.yml",
 		"$projectDir/config/detekt/detekt-override.yml",
 	)
+}
+
+// Dokka関連の全設定に対して、Jacksonのバージョンを強制的に「少し下げる」か「完全に固定」します
+configurations.matching { it.name.contains("dokka", ignoreCase = true) }.all {
+	resolutionStrategy {
+		eachDependency {
+			// Jackson関連をすべて 2.15.4 に固定してみてください。
+			// 2.18系だとDokka 1.9.20が内部で使っているメソッドが消えていて動かないケースがあります。
+			if (requested.group.startsWith("com.fasterxml.jackson")) {
+				useVersion("2.15.4")
+			}
+		}
+		// 強制的にこのバージョンを使わせる設定
+		force("com.fasterxml.jackson.core:jackson-databind:2.15.4")
+		force("com.fasterxml.jackson.core:jackson-core:2.15.4")
+		force("com.fasterxml.jackson.core:jackson-annotations:2.15.4")
+	}
+}
+
+openApi {
+	apiDocsUrl.set("http://localhost:8080/v3/api-docs.yaml")
+	outputDir.set(project.layout.buildDirectory.dir("springdoc"))
+	outputFileName.set("openapi.yaml")
 }
