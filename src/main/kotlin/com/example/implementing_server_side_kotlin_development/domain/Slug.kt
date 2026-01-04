@@ -1,5 +1,11 @@
 package com.example.implementing_server_side_kotlin_development.domain
 
+import arrow.core.EitherNel
+import arrow.core.leftNel
+import arrow.core.right
+import com.example.implementing_server_side_kotlin_development.util.ValidationError
+import java.util.UUID
+
 /**
  * 作成済記事の Slug
  *

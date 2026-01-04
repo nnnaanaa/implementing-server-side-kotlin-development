@@ -194,6 +194,10 @@ dependencies {
 	implementation("com.github.database-rider:rider-core:1.41.0")
 	implementation("com.github.database-rider:rider-spring:1.41.0")
 	testImplementation("com.github.database-rider:rider-junit5:1.41.0")
+
+	implementation("io.arrow-kt:arrow-core:1.2.1") // 追加
+	implementation("io.arrow-kt:arrow-fx-coroutines:1.2.1")	// 追加
+	runtimeOnly("com.h2database:h2")
 }
 
 kotlin {
