@@ -1,4 +1,4 @@
-package com.example.implementingserversidekotlindevelopment.api.integration.helper
+package com.example.implementing_server_side_kotlin_development.api.integration.helper
 
 import org.springframework.boot.test.autoconfigure.web.servlet.MockMvcBuilderCustomizer
 import org.springframework.stereotype.Component

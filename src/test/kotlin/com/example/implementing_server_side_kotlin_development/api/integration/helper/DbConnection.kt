@@ -1,4 +1,4 @@
-package com.example.implementingserversidekotlindevelopment.api.integration.helper
+package com.example.implementing_server_side_kotlin_development.api.integration.helper
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource

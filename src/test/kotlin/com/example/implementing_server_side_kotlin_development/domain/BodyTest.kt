@@ -1,4 +1,4 @@
-package com.example.implementingserversidekotlindevelopment.domain
+package com.example.implementing_server_side_kotlin_development.domain
 
 import arrow.core.Either
 import arrow.core.leftNel

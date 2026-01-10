@@ -4,7 +4,7 @@ import arrow.core.Either
 import arrow.core.getOrElse
 import arrow.core.left
 import arrow.core.right
-// import com.example.implementing_server_side_kotlin_development.domain.ArticleRepository
+import com.example.implementing_server_side_kotlin_development.domain.ArticleRepository
 import com.example.implementing_server_side_kotlin_development.domain.CreatedArticle
 import com.example.implementing_server_side_kotlin_development.domain.Slug
 import com.example.implementing_server_side_kotlin_development.util.ValidationError
@@ -47,6 +47,29 @@ interface ShowArticleUseCase {
 /**
  * 作成済記事の単一取得ユースケースの具象クラス
  *
+ * @property articleRepository
  */
 @Service
-class ShowArticleUseCaseImpl : ShowArticleUseCase
+class ShowArticleUseCaseImpl(val articleRepository: ArticleRepository) : ShowArticleUseCase {
+    override fun execute(slug: String): Either<ShowArticleUseCase.Error, CreatedArticle> {
+        /**
+         * slug の検証
+         *
+         * 不正な slug だった場合、早期 return
+         */
+        val validatedSlug = Slug.new(slug).getOrElse { return ShowArticleUseCase.Error.ValidationErrors(it.all).left() }
+
+        /**
+         * 記事の取得
+         *
+         * 取得失敗した場合、早期 return
+         */
+        val createdArticle = articleRepository.findBySlug(validatedSlug).getOrElse {
+            return when (it) {
+                is ArticleRepository.FindBySlugError.NotFound -> ShowArticleUseCase.Error.NotFoundArticleBySlug(it.slug).left()
+            }
+        }
+
+        return createdArticle.right()
+    }
+}

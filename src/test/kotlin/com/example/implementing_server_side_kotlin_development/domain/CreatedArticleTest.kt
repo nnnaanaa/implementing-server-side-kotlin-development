@@ -1,4 +1,4 @@
-package com.example.implementingserversidekotlindevelopment.domain
+package com.example.implementing_server_side_kotlin_development.domain
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.DynamicNode

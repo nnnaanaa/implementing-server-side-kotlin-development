@@ -1,6 +1,6 @@
-package com.example.implementingserversidekotlindevelopment.api.integration
+package com.example.implementing_server_side_kotlin_development.api.integration
 
-import com.example.implementingserversidekotlindevelopment.api.integration.helper.DbConnection
+import com.example.implementing_server_side_kotlin_development.api.integration.helper.DbConnection
 import com.github.database.rider.core.api.dataset.DataSet
 import com.github.database.rider.core.api.dataset.ExpectedDataSet
 import com.github.database.rider.junit5.api.DBRider
